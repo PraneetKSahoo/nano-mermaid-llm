@@ -1,24 +1,3 @@
-"""BPE tokenizer trained on a MIXED corpus.
-
-The original tokenizer was trained on TinyStories alone -- a corpus of
-deliberately simple children's English. It was then asked to encode things like
-`Primary Warehouse`, `stateDiagram-v2`, `A{{...}}` and `-->`, none of which have
-merges in a children's-story vocabulary. Those strings shattered into long runs
-of near-character-level byte tokens.
-
-That matters a great deal for this task. Copying a slot is not one attention
-hop; it is an induction circuit that has to fire correctly across every token of
-the string. The more fragments a slot value is split into, the longer the chain
-and the more attractive it is for the model to just guess instead.
-
-Mixing the Mermaid corpus into tokenizer training gives the technical terms and
-Mermaid punctuation real merges, shortening every slot value to a handful of
-tokens and making the copy circuit far easier to learn.
-
-Vocab stays at 8192. Because of weight tying, vocab size directly sets the size
-of both the embedding and the output head (8192 x 512 = 4.2M of the model's
-23M params), so growing it is not free.
-"""
 from tokenizers import Tokenizer, models, trainers, pre_tokenizers, decoders, processors
 from datasets import load_dataset
 
