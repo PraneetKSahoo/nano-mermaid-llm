@@ -1,14 +1,3 @@
-"""Instruction-tuning dataset: natural-language description -> Mermaid diagram.
-
-Changes from the original:
-  * Slot values come from slots.py (hundreds per slot, value-level train/val
-    holdout) instead of 10 hand-written strings per slot.
-  * Each sample records its slot values, so we can measure whether the model
-    actually copied them (see metrics.py).
-  * Sequences are padded per-batch by a collate_fn instead of padded to 512 in
-    __getitem__. The old version wasted ~90% of every forward pass on padding,
-    which is why an epoch over 4000 tiny samples took 775 seconds.
-"""
 import json
 import random
 import re
@@ -26,8 +15,6 @@ _SLOT_PATTERN = re.compile(r"\{(\w+)\}")
 
 
 def _template_slot_names(template):
-    # Content slots are lowercase (act_1, cond_2, label_1); the paraphrase
-    # grammar's connective placeholders are uppercase and already substituted.
     names = {n for n in _SLOT_PATTERN.findall(template["mermaid"]) if n.islower()}
     return sorted(names)
 
@@ -54,15 +41,7 @@ def generate_mermaid_dataset_split(
     output_val_file=None,
     seed=42,
 ):
-    """Build the fine-tuning pairs.
 
-    Validation is held out along two independent axes:
-      1. slot VALUES the model never saw in training (slots.py)
-      2. the final paraphrase of each template, unseen in training
-
-    So a model that has memorised anything at all will score badly, and only a
-    model that reads the prompt and copies will score well.
-    """
     output_train_file = Path(output_train_file or MERMAID_TRAIN_JSON)
     output_val_file = Path(output_val_file or MERMAID_VAL_JSON)
     PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
@@ -163,10 +142,7 @@ class OnTheFlyMermaidDataset(Dataset, _EncoderMixin):
 
     Why this exists: the first fine-tuning run used a fixed set of 20,000
     pre-generated pairs. With 23M parameters against ~1M training tokens the
-    model memorised that set outright -- train loss hit 0.0028 by epoch 4 and
-    0.0000 by epoch 5, meaning 14 of 17 epochs ran with essentially no gradient
-    signal. Slot accuracy stalled at 0.5-0.66 not because the model could do no
-    better but because training had effectively stopped.
+    model memorised that set outright. 
 
     Drawing a new combination each step makes memorisation impossible: with
     229M combinations per template the model will essentially never see the same
