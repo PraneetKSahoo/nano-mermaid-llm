@@ -1,9 +1,3 @@
-"""TinyStories -> uint16 token binaries -> memory-mapped Dataset.
-
-Changes: uses paths.py, batches tokenizer calls (much faster), and streams token
-IDs to disk in chunks instead of building one giant Python list (the old version
-held ~25M Python ints in RAM, roughly 800MB, before writing).
-"""
 import numpy as np
 import torch
 from torch.utils.data import Dataset, DataLoader
