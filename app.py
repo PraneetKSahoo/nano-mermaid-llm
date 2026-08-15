@@ -1,13 +1,3 @@
-"""NanoMermaid web interface.
-
-Updated for the Tier-2 model. Changes from the original:
-  * import path fixed -- src/ modules use flat imports, so src must be on sys.path
-  * sample prompts replaced (the old ones targeted templates that no longer exist)
-  * decoding defaults are now near-greedy, which is correct for structured output
-  * device name is detected rather than hardcoded
-  * the UI states the Title-Case requirement, which is the single most common
-    reason a prompt produces hallucinated labels
-"""
 import html
 import sys
 from pathlib import Path
@@ -17,10 +7,8 @@ import gradio as gr
 PROJECT_ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(PROJECT_ROOT / "src"))
 
-# Colab (and any remote VM) serves on the VM's own localhost, which your browser
-# cannot reach -- hence ERR_CONNECTION_REFUSED on 127.0.0.1:7860. share=True
-# opens a public tunnel URL instead.
-IN_COLAB = "google.colab" in sys.modules
+
+IN_COLAB = "google.colab" in sys.modules #incase you use colab
 
 import torch                                   # noqa: E402
 from generate import MermaidGenerator          # noqa: E402
@@ -169,7 +157,7 @@ def predict_diagram(prompt_text, temp, top_k, greedy):
     )
 
 
-# Gradio 6 moved `theme` from the Blocks constructor to launch().
+
 _GR_MAJOR = int(gr.__version__.split(".")[0])
 _BLOCKS_KW, _LAUNCH_KW = {"title": "NanoMermaid LLM"}, {}
 if _GR_MAJOR >= 6:
