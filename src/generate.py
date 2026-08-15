@@ -9,21 +9,7 @@ from model import load_model_from_config
 from tokenizer import load_tokenizer
 
 def _openers_from_templates():
-    """Forced opening prefixes, tokenised EXACTLY as they appear in training.
-
-    This is subtler than it looks. The previous version forced "graph TD\n",
-    which encodes in isolation as ['graph', 'ĠTD', 'Ċ']. But the training target
-    is "graph TD\n    A[...", which encodes as ['graph', 'ĠTD', 'ĊĠĠĠ', 'ĠA', ...]
-    -- the newline MERGES with the indentation into a single 'ĊĠĠĠ' token.
-
-    Forcing the bare 'Ċ' put the model at a token it never saw in that position,
-    so it skipped the indent and node letter entirely and emitted "[Grab Milk]"
-    instead of "    A[Grab Milk]". Every first node came out malformed.
-
-    So the forced prefix now runs through the indentation and the first node id,
-    guaranteeing the tokens match training exactly. The model is only ever free
-    to choose from the point where training itself becomes ambiguous ('[' vs '{').
-    """
+    
     try:
         from templates import TEMPLATES
     except ImportError:
@@ -164,14 +150,7 @@ class MermaidGenerator:
     def generate(self, prompt: str, temperature: float = 0.1, top_k: int = 20,
                  max_new_tokens: int = 180, max_consecutive_repeat: int = 2,
                  greedy: bool = False):
-        """Decode a diagram.
-
-        Defaults are near-greedy on purpose. This is structured output where
-        exactly one continuation is correct; temperature 0.5 / top_k 40 was
-        actively randomising the slot tokens the model was least sure about,
-        adding decoding noise on top of the copy failure. Pass greedy=True for
-        fully deterministic output.
-        """
+        
         if greedy:
             temperature, top_k = 1.0, 1
 
@@ -213,10 +192,6 @@ class MermaidGenerator:
         clean_type = _header_of(committed_type)
 
         if clean_type:
-            # raw_decoded already BEGINS with the forced prefix, because the
-            # header tokens were appended to idx before free generation started.
-            # The old code re-split on the type and glued a newline back on,
-            # which produced a stray blank line; there is nothing to rejoin.
             raw_code = raw_decoded
         elif "graph" in raw_decoded:
             raw_code = "graph" + raw_decoded.split("graph", 1)[1]
