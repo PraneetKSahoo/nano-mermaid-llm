@@ -47,9 +47,7 @@ class CausalSelfAttention(nn.Module):
         return y
 
 
-# Backwards-compatible alias: old checkpoints were saved with the misspelled
-# class name. State dicts key off parameter names, not class names, so this is
-# only here so any external import of the old name keeps working.
+
 CasualSelfAttention = CausalSelfAttention
 
 
@@ -115,12 +113,7 @@ class NanoGPT(nn.Module):
                 torch.nn.init.normal_(p, mean=0.0, std=0.02 / math.sqrt(2 * config["n_layer"]))
 
     def _init_weights(self, module):
-        # FIXED. Previously the nn.Embedding branch was nested inside the
-        # nn.Linear branch as an `elif module.bias is not None` sibling, so it
-        # was unreachable -- no Embedding could ever also be a Linear. The
-        # embeddings therefore kept PyTorch's default N(0, 1), which is 50x too
-        # wide, and because wte.weight is TIED to lm_head.weight the output head
-        # started with enormous logits. The old std was also 0.2, not 0.02.
+        
         if isinstance(module, nn.Linear):
             torch.nn.init.normal_(module.weight, mean=0.0, std=0.02)
             if module.bias is not None:
