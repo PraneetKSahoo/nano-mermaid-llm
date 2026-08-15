@@ -2,9 +2,7 @@
 
 Validation cross-entropy is a poor proxy for this task. A model that nails the
 template structure and guesses the slots still gets a respectable val loss,
-because the slot tokens are a small fraction of the target sequence. That is
-exactly the failure mode the first run hit: val loss 0.87, and the model emitted
-`Login / Grant Access / Block Request` for a prompt about `Payment`.
+because the slot tokens are a small fraction of the target sequence. 
 
 Slot exact-match has no such blind spot. Either the value from the prompt appears
 verbatim in the generated diagram or it does not.
@@ -44,18 +42,7 @@ _NEEDLE_CACHE = {}
 
 
 def _needle_context(template_name, slot_name):
-    """The characters bracketing a slot IN THE TEMPLATE PATTERN.
-
-    A bare substring check is wrong here: mermaid node IDs are A, B, C, D and
-    edge labels are Yes/No, so a `label` slot whose value is "B" or "Yes" matches
-    ANY diagram regardless of what the model produced -- about 10% of the eval
-    set scoring free points.
-
-    Context must come from the template, not from the rendered target. In the
-    rendered string "B -- Yes --> C[Yes]" the first occurrence of "Yes" is the
-    edge label, so searching the target finds the wrong one. The template says
-    `C[{label_1}]`, which pins the needle to "[Yes]".
-    """
+    
     key = (template_name, slot_name)
     if key in _NEEDLE_CACHE:
         return _NEEDLE_CACHE[key]
