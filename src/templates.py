@@ -1,31 +1,3 @@
-"""Tier-2 templates with a PARAPHRASE GRAMMAR.
-
-The diagnostic was unambiguous: copying is solved (0.980 all-slots on values the
-model has never seen) while unseen phrasing costs 47.5 points, and on an
-unfamiliar sentence pattern the model picks the wrong diagram shape 58% of the
-time. Ten hand-written phrasings per template is simply too few to generalise
-from.
-
-Rather than hand-writing hundreds of sentences, each template declares a small
-set of FRAMES plus interchangeable connective words. Taking the product yields
-hundreds of surface forms per template from a compact spec.
-
-  frames  -- sentence skeletons; UPPERCASE placeholders are connective words,
-             lowercase ones (act_1, cond_2, label_1) are content slots
-  words   -- the options for each UPPERCASE placeholder
-
-Two rules learned the hard way:
-
-1. Every fork/merge frame must carry an explicit parallelism cue ("both", "at
-   the same time", "splits into"). Without one, "X then Y and Z" is genuinely
-   ambiguous between fork and linear3 -- the model was being punished for a
-   contradiction in the data, not for a lack of skill.
-
-2. The train/val paraphrase split is now a seeded random split over the whole
-   enumerated set, not "the last two". Writing standard phrasings first and
-   unusual ones last meant holding out the tail systematically held out the
-   hardest cases, making the score pessimistic.
-"""
 import itertools
 import random
 import re
@@ -275,12 +247,7 @@ def enumerate_paraphrases(template):
 
 
 def paraphrase_split(template):
-    """Seeded random train/val split over ALL enumerated paraphrases.
-
-    Random rather than "hold out the last two": paraphrases written later tended
-    to be the more unusual ones, so a tail holdout systematically selected the
-    hardest cases and made the score pessimistic.
-    """
+    
     all_p = enumerate_paraphrases(template)
     shuffled = list(all_p)
     random.Random(_PARAPHRASE_SEED).shuffle(shuffled)
