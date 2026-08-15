@@ -22,10 +22,7 @@ SAMPLES_PER_EPOCH = 20000  # the fly, so there is nothing to memorise
 MAX_LR = 4e-4
 MIN_LR = 4e-5
 WARMUP_STEPS = 300
-EVAL_SAMPLES = 384       # val samples for the slot metric. At n=128 the
-                         # stderr was +/-4.4%, so epoch-to-epoch wobble of
-                         # 0.48 -> 0.52 was pure noise driving checkpoint
-                         # selection. n=384 cuts that to +/-2.5%.
+EVAL_SAMPLES = 384       
 
 torch.backends.cudnn.benchmark = True
 
@@ -45,13 +42,7 @@ def _check_vocab(tokenizer, config):
 
 
 def make_lr_fn(total_steps):
-    """Cosine decay with linear warmup, same recipe as pretraining.
-
-    The old script held LR flat at 4e-4 for the whole run. A flat LR keeps
-    nudging weights around at full step size right up to the last batch, so the
-    model never settles into a minimum -- visible in the original log as val loss
-    bouncing 1.04 -> 0.99 -> 0.87 -> 1.02 across consecutive epochs.
-    """
+   
     def lr_at(step):
         if step < WARMUP_STEPS:
             return MAX_LR * (step + 1) / WARMUP_STEPS
