@@ -184,8 +184,7 @@ def train(restart: bool = False):
                     val_loss += v_loss.item()
                     seen += 1
 
-            # Divide by batches actually seen, not by VAL_STEPS. The old version
-            # under-reported val loss whenever the loader ran out early.
+            # Divide by batches actually seen
             val_loss /= max(1, seen)
             elapsed = time.time() - start_time
             print(f"Step {step:4d}/{MAX_STEPS} | Train Loss: {accum_loss:.4f} | "
