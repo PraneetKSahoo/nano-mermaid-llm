@@ -14,7 +14,7 @@ Output  →  graph TD
 ```
 
 <!-- TODO: replace with a screenshot of app.py -->
-![NanoMermaid web UI](assets/demo.png)
+![NanoMermaid web UI](assets/ui.png)
 
 ---
 
@@ -35,10 +35,10 @@ The `0.974` is the interesting one: those are slot values like `Inallyarchivfi N
 
 ### Training curves
 
-<!-- TODO: export from W&B (Workspace → chart → ⋯ → Download PNG) -->
-| Pretraining | Fine-tuning |
+
+| Training loss | Validation loss |
 |---|---|
-| ![pretrain loss](assets/pretrain_loss.png) | ![finetune metrics](assets/finetune_metrics.png) |
+| ![training loss](assets/train_loss.png) | ![validation loss](assets/val_loss.png) |
 
 Pretraining converged from 3.64 → **1.887** validation loss over 3,000 steps with no divergence. Fine-tuning drove all-slots accuracy from 0.521 → **0.984** in 24 epochs.
 
