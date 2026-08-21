@@ -314,6 +314,14 @@ Both trainers auto-resume from their last checkpoint; `--restart` backs up the e
 
 ---
 
+## 📖 Documentation
+
+| document | for |
+| :--- | :--- |
+| **[HOW_IT_WORKS.md](HOW_IT_WORKS.md)** | Full explanation from first principles — no ML background needed |
+
+---
+
 ## 🗺️ Roadmap
 
 * [ ] **Case/filler normalisation** — teach `grab the milk` → `Grab Milk` so free-form English works
