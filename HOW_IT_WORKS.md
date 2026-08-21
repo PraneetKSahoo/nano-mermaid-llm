@@ -33,7 +33,9 @@ graph TD
     B -- No --> D[Open Door]
 ```
 
-renders as a flowchart: a box labelled "Log Name" with an arrow to a diamond labelled "Word Wrong", which branches to two more boxes.
+renders as a flowchart: a box labelled "Log Name" with an arrow to a diamond labelled "Word Wrong", which branches to two more boxes (Figure below).
+
+<img src="assets/exh1.png" width="50%" alt="example diagram">
 
 The goal: **type a description in English, get the Mermaid code back.**
 
