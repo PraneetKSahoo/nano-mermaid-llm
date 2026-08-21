@@ -46,7 +46,7 @@ Output: the code block above
 
 You could write this with regular expressions and pattern matching. We didn't — we trained a neural network to do it, from nothing. No downloaded weights, no pretrained model, no `AutoModel.from_pretrained()`. Every component was built and trained on a laptop with a 4GB graphics card.
 
-The finished model has **23.3 million parameters**. For comparison, the large commercial models are estimated at a trillion or more. Ours is roughly one hundred-thousandth the size.
+The finished model has **23.3 million parameters**. For comparison, the large commercial models are estimated at a trillion or more (Grok 4.6 ~ 1.5T; Kimi K3 ~ 2.8T). Ours is roughly one hundred-thousandth the size.
 
 ---
 
